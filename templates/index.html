@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Distance Demo</title>
+</head>
+<body>
+    <h1>Welcome to Edit Distance Demonstration</h1>
+    <form method="post">
+        <label>The first word:</label>
+        <input type="text" name="word1" required>
+        <label>The second word:</label>
+        <input type="text" name="word2" required>
+    </form>
+
+    <form>
+        <button type="submit">Submit</button>
+    </form>
+    <hr></hr>
+    <form>
+        <button type ="submit">Submit the words</button>
+        <button type ="submit">Clear all Fields</button>
+    </form>
+
+    {% if edit_dist is not none %}
+        <h2>The edit distance is: {{ edit_dist }}</h2>
+        <h3>Matrix:</h3>
+        <pre>{{ matrix }}</pre>
+    {% endif %}
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Distance Demo</title>
+</head>
