@@ -54,12 +54,14 @@ def matrix(row, column, matrix_val, str1, str2):
             result += "-----"
         result += "\n"
         if j!= column:
-            result += "|"
+            result += f"{str1[a]}|"
+            a+=1
             for _ in range(column):
                 result += ("  " + f"{matrix_val[i][j]}" + " :")
             result += "\n"
 
     # last line of matrix printed out
+    result+="  "
     for _ in range(column):
         result += "-----"
     print(result)
@@ -72,7 +74,7 @@ def matrix(row, column, matrix_val, str1, str2):
 def web_page():
     return render_template("index.html", matrix=matrix_str, edit_dist=None)
 if __name__ == "__main__":
-    row, col, ed_matrix, str1, str2 = editDistance("evolution", "evaluation")
+    row, col, ed_matrix, str1, str2 = editDistance("love", "life")
     matrix_str = matrix(row, col, ed_matrix, str1, str2)
     app.run(debug=True)
 
