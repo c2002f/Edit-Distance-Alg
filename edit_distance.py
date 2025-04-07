@@ -29,25 +29,40 @@ def editDistance(n, m):
     #     for j in range(rows):
     #         #row[0]
 
-    return rows, columns, matrix
+    return rows, columns, matrix, n, m
 
 #function to draw matrix
-def matrix(row, column, matrix_val):
-    result=""
-    i = 0
-    j = 0
+def matrix(row, column, matrix_val, str1, str2):
+    result=" "
+
+    #iteration through matrix
+    i=0 
+    j=0
+
+    #iteration through string
+    a=0
+    b=0
+    str1 = "*" + str1
+    str2 = "*" + str2
+    for b in range(len(str2)):
+        result += f"  {str2[b]}  "
+
+    result+= "\n"
     for i in range(row):
+        result+="  "
         for _ in range(column):
-            result += "------"
+            result += "-----"
         result += "\n"
         if j!= column:
             result += "|"
             for _ in range(column):
-                result += ("  " + f"{matrix_val[i][j]}" + ":")
+                result += ("  " + f"{matrix_val[i][j]}" + " :")
             result += "\n"
+
     # last line of matrix printed out
     for _ in range(column):
-        result += "------"
+        result += "-----"
+    print(result)
     return result
     
     
@@ -57,8 +72,8 @@ def matrix(row, column, matrix_val):
 def web_page():
     return render_template("index.html", matrix=matrix_str, edit_dist=None)
 if __name__ == "__main__":
-    row, col, ed_matrix = editDistance("life", "love")
-    matrix_str = matrix(row, col, ed_matrix)
+    row, col, ed_matrix, str1, str2 = editDistance("evolution", "evaluation")
+    matrix_str = matrix(row, col, ed_matrix, str1, str2)
     app.run(debug=True)
 
 
