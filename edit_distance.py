@@ -4,78 +4,67 @@ import numpy as np
 app = Flask(__name__)
 
 def editDistance(n, m):
-
     #ignoring case sensitivity, adding space between
-    n = "*" + n.lower()
-    m = "*" + m.lower()
+    n = " " + n.lower()
+    m = " " + m.lower()
 
     #determining size of matrix
-    print("Here is string one: " + n)
+    print("Here is string one: " + n) #debug, delete
     print("Here is string two: " + m)
-    n_len = len(n) # initialize matrix row
-    m_len = len(m) # initialize matrix column
 
-    rows = n_len #matrix row
-    columns = m_len #initialize matrix column
+    rows = len(n) #matrix row
+    columns = len(m) #initialize matrix column
 
     #initializing matrix with zeroes
-    matrix = [[0 for _ in range(rows)] for _ in range(columns)]
-
+    matrix = [[0 for _ in range(columns)] for _ in range(rows)]
+    print(matrix)
     print(rows, columns) ##DEBUG, check size
 
-    i = 0
-    j = 0
+
     for i in range(rows):
         for j in range(columns):
             if n[i]==m[j]:
-                if i !=0 and j!=0:
+                print("match")
+                if matrix[i-1][j-1]!=None:
                     matrix[i][j]=matrix[i-1][j-1]
+                # else:
+                #     matrix[i][j]=0
             else:
-                #check space before
-                min_cell = 100 # random value that will always be bigger than cell
-                if j !=0:
-                    if matrix[i][j-1] < min_cell:
-                        min_cell = matrix[i][j-1]
-                if i !=0:
-                    if matrix[i-1][j] < min_cell:
-                        min_cell = matrix[i][j-1]
-                if i !=0 and j!=0:
-                    if matrix[i-1][j-1] < min_cell:
-                        min_cell = matrix[i-1][j-1]
+                
+                min_cell = min(
+                    matrix[i][j-1], #cell before
+                    matrix[i-1][j], #cell above
+                    matrix[i-1][j-1] #cell diagnol
+                )
+                matrix[i][j] = min_cell + 1
+                print(f"Row:{i} Column:{j} Cell Value:", matrix[i][j])
 
-    return rows, columns, matrix, n, m
+    print(matrix)
+    return matrix
 
 #function to draw matrix
-def matrix(row, column, matrix_val, str1, str2):
+def matrix(matrix_val, str1, str2):
     result=" "
-    #iteration through matrix
-    i=0 
-    j=0
-    #iteration through string
-    a=0
-    b=0
-    # str1 = "*" + str1
-    # str2 = "*" + str2
+
     #saving matrix to result to be printed out
     for b in range(len(str2)):
-        result += f"  {str2[b]}  "
+        result += f"  {str2[b]}  " 
     result+= "\n"
-    for i in range(row):
+    for i in range(len(str1)):
         result+="  "
-        for _ in range(column):
+        for j in range(len(str2)):
             result += "-----"
         result += "\n"
-        if j!= column:
-            result += f"{str1[a]}|"
-            a+=1
-            for _ in range(column):
-                result += ("  " + f"{matrix_val[i][j]}" + " :")
-            result += "\n"
+        result += f"{str1[i]}|"
+        for j in range(len(str2)):
+            result += ("  " + f"{matrix_val[i][j]}" + " :")
+        result += "\n"
 
     # last line of matrix printed out
     result+="  "
-    for _ in range(column):
+    for _ in range(len(str2)):
         result += "-----"
+
     print(result)
     return result
     
@@ -86,8 +75,10 @@ def matrix(row, column, matrix_val, str1, str2):
 def web_page():
     return render_template("index.html", matrix=matrix_str, edit_dist=None)
 if __name__ == "__main__":
-    row, col, ed_matrix, str1, str2 = editDistance("love", "life")
-    matrix_str = matrix(row, col, ed_matrix, str1, str2)
+    str1 = "evaluation"
+    str2 = "elution"
+    ed_matrix = editDistance(str1, str2)
+    matrix_str = matrix(ed_matrix, str1, str2)
     # app.run(debug=True)
 
 
