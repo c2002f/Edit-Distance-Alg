@@ -25,7 +25,6 @@ def editDistance(n, m):
     for i in range(1, rows):
         for j in range(1, columns):
             if n[i]==m[j]:
-                print(n, m)
                 matrix[i][j] = matrix[i-1][j-1]  # No cost
                 if len(n)<=len(m):
                     shortestMatch.append(i)
@@ -70,7 +69,6 @@ def matrix(matrix_val, n, m):
 def stringAlignment(n, m, shortestMatch):
     #str1 represents the longer string if one is present
     #if equal length, then the first given string stays as first string
-
     if len(n)>=len(m):
         str1=n
         str2=m
@@ -82,12 +80,25 @@ def stringAlignment(n, m, shortestMatch):
 
     j = 0
     i = 0
-    for i in range(len(str1)): #check if shortest match is empty
-        if j < len(shortestMatch) and str1[i]==str2[shortestMatch[j]]:
-            alignment+=str2[shortestMatch[j]]
-            j+=1
-        else:
-            alignment+="_"
+    # for i in range(len(str1)): #check if shortest match is empty
+    #     if j < len(shortestMatch) and str1[i]==str2[shortestMatch[j]]:
+    #         alignment+=str2[shortestMatch[j]]
+    #         j+=1
+    #     else:
+    #         alignment+="_"
+
+    # checking if a char in str2 has already been used in alignemnt
+    #in case of duplicate chars
+    usedChar = set() 
+    for i in range(len(str1)): #iterating through entirety of string, making sure string matches
+        if j < len(shortestMatch):
+            if str1[i]==str2[shortestMatch[j]] and j not in usedChar:
+                alignment+=str2[shortestMatch[j]]
+                usedChar.add(j)
+                j+=1
+            else:
+                alignment+="_"
+
 
     print (alignment)
     return alignment
