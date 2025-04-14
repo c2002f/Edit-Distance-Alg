@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Welcome to Edit Distance Demonstration</h1>
-
+    <hr>
     <!-- Form for submitting words -->
     <form method="post">
         <label>The first word:</label>
@@ -14,7 +14,6 @@
         <input type="text" name="word2" required>
         <button type="submit">Submit the words</button>
     </form>
-
     <!-- Clear Fields Button (reset the form) -->
     <form method="get">
         <button type="submit">Clear all Fields</button>
@@ -25,7 +24,16 @@
     <!-- Display the matrix if the words are submitted -->
     {% if matrix %}
         <h3>Matrix:</h3>
-        <pre>{{ matrix }}</pre>
+        <center>
+            <pre>{{ matrix }}</pre>
+        </center>
     {% endif %}
+
+    {% if edit_dist is not none %}
+    <label>Edit Distance: {{ edit_dist }}</label>
+    <label>Alignment:</label>
+    <pre>nothing</pre>
+
+{% endif %}
 </body>
 </html>

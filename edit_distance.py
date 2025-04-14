@@ -1,87 +1,116 @@
-from flask import Flask, render_template
-import numpy as np
+#to run this program, the Flask library must be installed locally
+# pip install Flask
+# this program can be compiled using python edit_distance.py OR python3 edit_distance.py
+# and should direct you to a locally hosted Flask application
+
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 def editDistance(n, m):
-    #ignoring case sensitivity, adding space between
-    n = " " + n.lower()
-    m = " " + m.lower()
-
-    #determining size of matrix
-    print("Here is string one: " + n) #debug, delete
-    print("Here is string two: " + m)
-
     rows = len(n) #matrix row
     columns = len(m) #initialize matrix column
 
+    shortestMatch=[]
     #initializing matrix with zeroes
     matrix = [[0 for _ in range(columns)] for _ in range(rows)]
-    print(matrix)
-    print(rows, columns) ##DEBUG, check size
 
-
+    #initalizing the first row and column
     for i in range(rows):
-        for j in range(columns):
+        matrix[i][0] = i
+    for j in range(columns):
+        matrix[0][j] = j
+
+    #start of edit distance algorithm
+    for i in range(1, rows):
+        for j in range(1, columns):
             if n[i]==m[j]:
-                print("match")
-                if matrix[i-1][j-1]!=None:
-                    matrix[i][j]=matrix[i-1][j-1]
-                # else:
-                #     matrix[i][j]=0
-            else:
-                
+                print(n, m)
+                matrix[i][j] = matrix[i-1][j-1]  # No cost
+                if len(n)<=len(m):
+                    shortestMatch.append(i)
+                else:
+                    shortestMatch.append(j)
+                    
+            else : #if chars in string do not match
                 min_cell = min(
                     matrix[i][j-1], #cell before
                     matrix[i-1][j], #cell above
-                    matrix[i-1][j-1] #cell diagnol
+                    matrix[i-1][j-1] #cell diagonal
                 )
-                matrix[i][j] = min_cell + 1
-                print(f"Row:{i} Column:{j} Cell Value:", matrix[i][j])
-
-    print(matrix)
-    return matrix
+                matrix[i][j] = min_cell + 1 #take minimal cost and add one 
+    print(shortestMatch)
+    return matrix, matrix[i][j], shortestMatch
 
 #function to draw matrix
-def matrix(matrix_val, str1, str2):
+def matrix(matrix_val, n, m):
     result=" "
-
     #saving matrix to result to be printed out
-    for b in range(len(str2)):
-        result += f"  {str2[b]}  " 
+    for b in range(len(m)):
+        result += f"   {m[b]}   " 
     result+= "\n"
-    for i in range(len(str1)):
+    for i in range(len(n)):
         result+="  "
-        for j in range(len(str2)):
-            result += "-----"
+        for j in range(len(m)):
+            result += "-------"
         result += "\n"
-        result += f"{str1[i]}|"
-        for j in range(len(str2)):
-            result += ("  " + f"{matrix_val[i][j]}" + " :")
+        result += f"{n[i]}|"
+        for j in range(len(m)):
+            result += ("    " + f"{matrix_val[i][j]}" + " :")
         result += "\n"
 
     # last line of matrix printed out
     result+="  "
-    for _ in range(len(str2)):
-        result += "-----"
+    for _ in range(len(m)):
+        result += "-------"
 
     print(result)
     return result
+
+def stringAlignment(n, m, shortestMatch):
+    #str1 represents the longer string if one is present
+    #if equal length, then the first given string stays as first string
+
+    if len(n)>=len(m):
+        str1=n
+        str2=m
+    elif len(n)<len(m):
+        str1=m
+        str2=n
     
-    
+    alignment=str1+"\n"
+
+    j = 0
+    i = 0
+    for i in range(len(str1)): #check if shortest match is empty
+        if j < len(shortestMatch) and str1[i]==str2[shortestMatch[j]]:
+            alignment+=str2[shortestMatch[j]]
+            j+=1
+        else:
+            alignment+="_"
+
+    print (alignment)
+    return alignment
+
 
 @app.route("/", methods=["GET", "POST"])
 
 def web_page():
-    return render_template("index.html", matrix=matrix_str, edit_dist=None)
+    matrix_str = ""
+    dist = None
+
+    # if request.method == "POST":
+    #     str1 = " " + request.form["word1"].lower()
+    #     str2 = " " + request.form["word2"].lower()
+    #     ed_matrix, dist = editDistance(str1, str2)
+    #     matrix_str = matrix(ed_matrix, str1, str2)
+    #     print(dist)
+    return render_template("index.html", matrix=matrix_str, edit_dist=dist)
 if __name__ == "__main__":
-    str1 = "evaluation"
-    str2 = "elution"
-    ed_matrix = editDistance(str1, str2)
-    matrix_str = matrix(ed_matrix, str1, str2)
+    str1 = " evaluation"
+    str2 = " evolution"
     # app.run(debug=True)
+    editMatrix, dist, shortestString = editDistance(str1, str2)
+    alignment = stringAlignment(str1, str2, shortestString)
+    matrix_str = matrix(editMatrix, str1, str2)
 
-
-# in terminal, run python edit_distance.py
-#or python3 edit_distance.py
-#make sure necessary libraries like flask and numpy are installed locally
