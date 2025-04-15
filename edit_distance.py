@@ -69,41 +69,34 @@ def matrix(matrix_val, n, m):
 def stringAlignment(n, m, shortestMatch):
     #str1 represents the longer string if one is present
     #if equal length, then the first given string stays as first string
-    if len(n)>=len(m):
-        str1=n
-        str2=m
-    elif len(n)<len(m):
-        str1=m
-        str2=n
+    if len(n) >= len(m):
+        str1 = n
+        str2 = m
+    elif len(n) < len(m):
+        str1 = m
+        str2 = n
     
-    alignment=str1+"\n"
+    # Remove the leading space from str1 for correct alignment
+    alignment = str1 + "\n"
+    subAlignment = []  # this will store the aligned string
+    usedChar = set()   # to ensure we do not reuse the same index
 
+    # Skip the first character (space) from the alignment process
     j = 0
-    i = 0
-
-    # checking if a char in str2 has already been used in alignemnt
-    #in case of duplicate chars
-    usedChar = set()
-
-    #used in for loop, under condition to add if index has not been used
-    subAlignment=[] 
-
-    print(usedChar)
-    for i in range(len(str1)): #iterating through entirety of string, making sure string matches
+    for i in range(1, len(str1)):  # Start at index 1 to skip the first space
         match = False
         for j in range(len(str2)):
-            if str1[i]==str2[j] and j not in usedChar and j in shortestMatch:
-                subAlignment.append(str2[j])
-                usedChar.add(j) #will skip if index has already been used
-                match=True
-                j+=1
-                break #avoiding duplicate matches
-        if match==False:
-            subAlignment.append("_")
+            if str1[i] == str2[j] and j not in usedChar and j in shortestMatch:
+                subAlignment.append(str2[j])  # Append matching characters
+                usedChar.add(j)  # Mark this index as used
+                match = True
+                break  # Avoid duplicate matches
+        if not match:
+            subAlignment.append("_")  # If no match, append '_'
 
-    alignment+=''.join(subAlignment)
-    print(usedChar)
-    print(alignment)
+    # convert subAlignment to string and add to alignment
+    alignment += " "+''.join(subAlignment)  
+
     return alignment
 
 
@@ -112,19 +105,16 @@ def stringAlignment(n, m, shortestMatch):
 def web_page():
     matrix_str = ""
     dist = None
+    alignment = ""
 
-    # if request.method == "POST":
-    #     str1 = " " + request.form["word1"].lower()
-    #     str2 = " " + request.form["word2"].lower()
-    #     ed_matrix, dist = editDistance(str1, str2)
-    #     matrix_str = matrix(ed_matrix, str1, str2)
-    #     print(dist)
-    return render_template("index.html", matrix=matrix_str, edit_dist=dist)
+    if request.method == "POST":
+        str1 = " " + request.form["word1"].lower()
+        str2 = " " + request.form["word2"].lower()
+        ed_matrix, dist, shortestString = editDistance(str1, str2)
+        matrix_str = matrix(ed_matrix, str1, str2)
+        alignment = stringAlignment(str1, str2, shortestString)
+
+    return render_template("index.html", matrix=matrix_str, edit_dist=dist, align=alignment)
 if __name__ == "__main__":
-    str1 = " evaluation"
-    str2 = " evolution"
-    # app.run(debug=True)
-    editMatrix, dist, shortestString = editDistance(str1, str2)
-    alignment = stringAlignment(str1, str2, shortestString)
-    matrix_str = matrix(editMatrix, str1, str2)
+    app.run(debug=True)
 

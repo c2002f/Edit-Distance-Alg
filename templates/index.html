@@ -30,10 +30,14 @@
     {% endif %}
 
     {% if edit_dist is not none %}
-    <label>Edit Distance: {{ edit_dist }}</label>
-    <label>Alignment:</label>
-    <pre>nothing</pre>
+        <label>Edit Distance: {{ edit_dist }}</label>
+    {% endif %}
 
-{% endif %}
+    {% if align is not none%}
+        <br>
+        <label>Alignment:</label>
+            <pre>{{ align }}</pre>
+    {% endif %}
+
 </body>
 </html>
