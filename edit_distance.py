@@ -90,6 +90,7 @@ def stringAlignment(n, m, shortestMatch):
                 subAlignment.append(str2[j])  # Append matching characters
                 usedChar.add(j)  # Mark this index as used
                 match = True
+                j+=1
                 break  # Avoid duplicate matches
         if not match:
             subAlignment.append("_")  # If no match, append '_'
