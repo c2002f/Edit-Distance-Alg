@@ -80,27 +80,30 @@ def stringAlignment(n, m, shortestMatch):
 
     j = 0
     i = 0
-    # for i in range(len(str1)): #check if shortest match is empty
-    #     if j < len(shortestMatch) and str1[i]==str2[shortestMatch[j]]:
-    #         alignment+=str2[shortestMatch[j]]
-    #         j+=1
-    #     else:
-    #         alignment+="_"
 
     # checking if a char in str2 has already been used in alignemnt
     #in case of duplicate chars
-    usedChar = set() 
+    usedChar = set()
+
+    #used in for loop, under condition to add if index has not been used
+    subAlignment=[] 
+
+    print(usedChar)
     for i in range(len(str1)): #iterating through entirety of string, making sure string matches
-        if j < len(shortestMatch):
-            if str1[i]==str2[shortestMatch[j]] and j not in usedChar:
-                alignment+=str2[shortestMatch[j]]
-                usedChar.add(j)
+        match = False
+        for j in range(len(str2)):
+            if str1[i]==str2[j] and j not in usedChar and j in shortestMatch:
+                subAlignment.append(str2[j])
+                usedChar.add(j) #will skip if index has already been used
+                match=True
                 j+=1
-            else:
-                alignment+="_"
+                break #avoiding duplicate matches
+        if match==False:
+            subAlignment.append("_")
 
-
-    print (alignment)
+    alignment+=''.join(subAlignment)
+    print(usedChar)
+    print(alignment)
     return alignment
 
 
